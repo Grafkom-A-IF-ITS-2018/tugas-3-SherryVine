@@ -7,21 +7,22 @@
   
     <script id="shader-fs" type="x-shader/x-fragment">
       precision mediump float;
-      varying vec4 vColor;
+      varying vec2 vTextureCoord;
+      uniform sampler2D uSampler;
       void main(void) {
-          gl_FragColor = vColor;
+        gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
       }
     </script>
     
     <script id="shader-vs" type="x-shader/x-vertex">
       attribute vec3 aVertexPosition;
-      attribute vec4 aVertexColor;
+      attribute vec2 aTextureCoord;
       uniform mat4 uMVMatrix;
       uniform mat4 uPMatrix;
-      varying vec4 vColor;
+      varying vec2 vTextureCoord;
       void main(void) {
           gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-          vColor = aVertexColor;
+          vTextureCoord = aTextureCoord;
       }
     </script>
     <script type="text/javascript">
@@ -95,17 +96,52 @@
         shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, 'aVertexPosition')
         gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute)
 
-        shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
-        gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
+        // KODE BARU
+        shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
+        gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
       
         shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, 'uPMatrix')
         shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, 'uMVMatrix')
-        // ADD A UNIFORM for TEXTURE SAMPLE
+        // KODE BARU
+        shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, 'uSampler')
       }
 
-      // CREATE FUNCTIONS to HANDLE TEXTURES
-          //  --- here ---
-      // CREATE FUNCTIONS to HANDLE TEXTURES
+      function handleLoadedTexture(textures) {
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
+        // Sampler 1
+        gl.bindTexture(gl.TEXTURE_2D, textures[0])
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textures[0].image)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+        // Sampler 2
+        gl.bindTexture(gl.TEXTURE_2D, textures[1])
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textures[1].image)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+        // Sampler 3
+        gl.bindTexture(gl.TEXTURE_2D, textures[2])
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textures[2].image)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST)
+        gl.generateMipmap(gl.TEXTURE_2D)
+
+        gl.bindTexture(gl.TEXTURE_2D, null)
+      }
+
+      var crateTextures = Array()
+
+      function initTexture() {
+        var crateImage = new Image()
+        for (var i = 0; i < 3; i++) {
+          var texture = gl.createTexture()
+          texture.image = crateImage
+          crateTextures.push(texture)
+        }
+        crateImage.onload = function() {
+          handleLoadedTexture(crateTextures)
+        }
+        crateImage.src = 'crate.gif'
+      }
 
       var mvMatrix = mat4.create()
       var mvMatrixStack = []
@@ -130,7 +166,7 @@
       }
 
       var cubeVertexPositionBuffer
-      // var cubeVertexTextureCoordBuffer
+      var cubeVertexTextureCoordBuffer
       var cubeVertexIndexBuffer
       
       function initBuffers() {
@@ -174,7 +210,8 @@
         cubeVertexPositionBuffer.numItems = 24
 
         // Cube Texture
-        // CREATE A BUFFER for CUBE'S TEXTURE
+        cubeVertexTextureCoordBuffer = gl.createBuffer()
+        gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexTextureCoordBuffer)
         var textureCoords = [
           // Front face
           0.0, 0.0,
@@ -205,9 +242,11 @@
           0.0, 0.0,
           1.0, 0.0,
           1.0, 1.0,
-          0.0, 1.0,
+          0.0, 1.0
         ]
-        // CREATE A BUFFER for CUBE'S TEXTURE
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW)
+        cubeVertexTextureCoordBuffer.itemSize = 2
+        cubeVertexTextureCoordBuffer.numItems = 24
 
         // Cube Indices
         cubeVertexIndexBuffer = gl.createBuffer()
@@ -225,9 +264,55 @@
         cubeVertexIndexBuffer.numItems = 36
       }
       
-      // CREATE VARIABLES and FUNCTIONS for INTERACTION
-          // --- here ---
-      // CREATE VARIABLES and FUNCTIONS for INTERACTION
+      var xRot = 0
+      var xSpeed = 0
+      var yRot = 0
+      var ySpeed = 0
+      var z = -5.0
+      var currentPressedKeys = {}
+
+      function handleKeyDown(event) {
+        currentPressedKeys[event.keyCode] = true
+        if (String.fromCharCode(event.keyCode) == 'F') {
+          filter += 1
+          if (filter == 3) {
+            filter = 0
+          }
+        }
+      }
+
+      function handleKeyUp(event) {
+        currentPressedKeys[event.keyCode] = false
+      }
+
+      function handleKeys() {
+        if (currentPressedKeys[87]) {
+          // W
+          z -= 0.05
+        }
+        if (currentPressedKeys[83]) {
+          // S
+          z += 0.05
+        }
+        if (currentPressedKeys[37]) {
+          // Kiri
+          ySpeed -= 1
+        }
+        if (currentPressedKeys[39]) {
+          // Kanan
+          ySpeed += 1
+        }
+        if (currentPressedKeys[38]) {
+          // Atas
+          xSpeed -= 1
+        }
+        if (currentPressedKeys[40]) {
+          // Bawah
+          xSpeed += 1
+        }
+      }
+
+      var filter = 0
 
       function drawScene() {
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight)
@@ -237,16 +322,20 @@
         
         mat4.identity(mvMatrix)
         
-        // TRANSLASI
+        mat4.translate(mvMatrix, mvMatrix, [0.0, 0.0, z])
 
-        // ROTASI
+        mat4.rotate(mvMatrix, mvMatrix, glMatrix.toRadian(xRot), [1, 0, 0])
+        mat4.rotate(mvMatrix, mvMatrix, glMatrix.toRadian(yRot), [0, 1, 0])
         
         gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer)
         gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0)
         
-        // CREATE A BUFFER POINTER for TEXTURE
+        gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexTextureCoordBuffer)
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0)
         
-        // SELECT THE ACTIVE TEXTURE on THE GPU WORLD
+        gl.activeTexture(gl.TEXTURE0)
+        gl.bindTexture(gl.TEXTURE_2D, crateTextures[filter])
+        gl.uniform1i(shaderProgram.samplerUniform, 0)
         
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer)
         setMatrixUniforms()
@@ -265,7 +354,7 @@
       }
       function tick() {
         requestAnimationFrame(tick)
-        //handleKeys()
+        handleKeys()
         drawScene()
         animate()
       }
@@ -274,12 +363,13 @@
         initGL(canvas)
         initShaders()
         initBuffers()
-        //initTexture()
+        initTexture()
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0)
         gl.enable(gl.DEPTH_TEST)
 
-        // SET CALLBACK FUNCTIONS for HANDLING THE INTERACTION with KEYBOARD
+        document.onkeydown = handleKeyDown
+        document.onkeyup = handleKeyUp
 
         tick()
       }
