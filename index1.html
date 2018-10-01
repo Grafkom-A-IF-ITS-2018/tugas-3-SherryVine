@@ -178,17 +178,13 @@
         if(xThirdAlpha == 1){
           if(collision == 1){
             xThirdAlpha = Math.random() * 2 - 1
-
             yThirdAlpha = Math.floor(Math.random() * 2) - 1
             zThirdAlpha = Math.random() * 2 - 1
-            console.log(zThirdAlpha + ' x=1')
           }
           else if(collision == 0){
             xThirdAlpha = Math.random() * 2 - 1
-
             yThirdAlpha = Math.random() * 2 - 1
             zThirdAlpha = Math.floor(Math.random() * 2) - 1
-            console.log(zThirdAlpha + ' x=1')
           }
         }
         else if(yThirdAlpha == 1){
@@ -196,32 +192,26 @@
             xThirdAlpha = Math.random() * 2 - 1
             yThirdAlpha = Math.random() * 2 - 1
             zThirdAlpha = Math.floor(Math.random() * 2) - 1
-            console.log(zThirdAlpha + ' y=1')
           }
           else if(collision == 0){
             xThirdAlpha = Math.floor(Math.random() * 2) - 1
-
             yThirdAlpha = Math.random() * 2 - 1
             zThirdAlpha = Math.random() * 2 - 1
-            console.log(zThirdAlpha + ' y=1')
           }
         }
         else if(zThirdAlpha == 1){
           if(collision == 1){
             xThirdAlpha = Math.random() * 2 - 1
-
             yThirdAlpha = Math.floor(Math.random() * 2) - 1
             zThirdAlpha = Math.random() * 2 - 1
-            console.log(zThirdAlpha + ' z=1')
           }
           else if(collision == 0){
             xThirdAlpha = Math.floor(Math.random() * 2) - 1
-
             yThirdAlpha = Math.random() * 2 - 1
             zThirdAlpha = Math.random() * 2 - 1
-            console.log(zThirdAlpha + ' z=1')
           }
         }
+        console.log('x: ' + xThirdAlpha + '\ny: ' + yThirdAlpha + '\nz: ' + zThirdAlpha)
       }
 
       var rTri = 0
@@ -246,7 +236,8 @@
         setMatrixUniforms()
         gl.drawArrays(gl.LINE_LOOP, 0, thirdAlphaVertexPositionBuffer.numItems)
         mvPopMatrix()
-        mat4.translate(mvMatrix, mvMatrix, [xThirdAlpha, yThirdAlpha, zThirdAlpha])
+        mat4.translate(mvMatrix, mvMatrix, [xThirdAlpha, yThirdAlpha, 0])
+        //mat4.translate(mvMatrix, mvMatrix, [0, 0])
         mvPushMatrix()
         mat4.rotate(mvMatrix, mvMatrix, glMatrix.toRadian(rSquare), [0.0, 1.0, 0.0])
         //mat4.rotateY(mvMatrix, mvMatrix, glMatrix.toRadian(rSquare))
