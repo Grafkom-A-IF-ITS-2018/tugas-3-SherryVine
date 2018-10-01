@@ -146,10 +146,10 @@
         fifthAlphaVertexPositionBuffer = gl.createBuffer()
         gl.bindBuffer(gl.ARRAY_BUFFER, fifthAlphaVertexPositionBuffer)
         vertices = [
-          0.25,  1.0,  0.0,
-          -0.25, 1.0,  0.0,
-          0.25,  -1.0, 0.0,
-          -0.25, -1.0, 0.0
+          0.15,  0.35,  0.0,
+          -0.15, 0.35,  0.0,
+          0.15,  -0.35, 0.0,
+          -0.15, -0.35, 0.0
         ]
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
         fifthAlphaVertexPositionBuffer.itemSize = 3
@@ -165,6 +165,65 @@
         fifthAlphaVertexColorBuffer.itemSize = 4;
         fifthAlphaVertexColorBuffer.numItems = 4;
       }
+
+      var main_collision = Math.floor(Math.random() * 3)
+      console.log('col: ' + main_collision)
+      if(main_collision == 0) var xThirdAlpha = 1
+      else if(main_collision == 1) var yThirdAlpha = 1
+      else if(main_collision == 2) var zThirdAlpha = 1
+
+      function random_boing(){
+        collision = Math.floor(Math.random() * 2)
+        //console.log(collision)
+        if(xThirdAlpha == 1){
+          if(collision == 1){
+            xThirdAlpha = Math.random() * 2 - 1
+
+            yThirdAlpha = Math.floor(Math.random() * 2) - 1
+            zThirdAlpha = Math.random() * 2 - 1
+            console.log(zThirdAlpha + ' x=1')
+          }
+          else if(collision == 0){
+            xThirdAlpha = Math.random() * 2 - 1
+
+            yThirdAlpha = Math.random() * 2 - 1
+            zThirdAlpha = Math.floor(Math.random() * 2) - 1
+            console.log(zThirdAlpha + ' x=1')
+          }
+        }
+        else if(yThirdAlpha == 1){
+          if(collision == 1){
+            xThirdAlpha = Math.random() * 2 - 1
+            yThirdAlpha = Math.random() * 2 - 1
+            zThirdAlpha = Math.floor(Math.random() * 2) - 1
+            console.log(zThirdAlpha + ' y=1')
+          }
+          else if(collision == 0){
+            xThirdAlpha = Math.floor(Math.random() * 2) - 1
+
+            yThirdAlpha = Math.random() * 2 - 1
+            zThirdAlpha = Math.random() * 2 - 1
+            console.log(zThirdAlpha + ' y=1')
+          }
+        }
+        else if(zThirdAlpha == 1){
+          if(collision == 1){
+            xThirdAlpha = Math.random() * 2 - 1
+
+            yThirdAlpha = Math.floor(Math.random() * 2) - 1
+            zThirdAlpha = Math.random() * 2 - 1
+            console.log(zThirdAlpha + ' z=1')
+          }
+          else if(collision == 0){
+            xThirdAlpha = Math.floor(Math.random() * 2) - 1
+
+            yThirdAlpha = Math.random() * 2 - 1
+            zThirdAlpha = Math.random() * 2 - 1
+            console.log(zThirdAlpha + ' z=1')
+          }
+        }
+      }
+
       var rTri = 0
       var rSquare = 0
       function drawScene() {
@@ -174,10 +233,10 @@
 
         mat4.identity(mvMatrix)
 
-        mat4.translate(mvMatrix, mvMatrix, [0.0, 0.0, -5.5])
+        mat4.translate(mvMatrix, mvMatrix, [0.0, 0.0, -4.0])
         mvPushMatrix()
-        mat4.rotate(mvMatrix, mvMatrix, glMatrix.toRadian(rTri), [1, 0, 0])
-        //mat4.rotateX(mvMatrix, mvMatrix, glMatrix.toRadian(rTri))
+        //mat4.rotate(mvMatrix, mvMatrix, glMatrix.toRadian(rTri), [1, 0, 0])
+        mat4.rotateY(mvMatrix, mvMatrix, glMatrix.toRadian(rTri))
         gl.bindBuffer(gl.ARRAY_BUFFER, thirdAlphaVertexPositionBuffer)
         gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, thirdAlphaVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0)
 
@@ -187,6 +246,7 @@
         setMatrixUniforms()
         gl.drawArrays(gl.LINE_LOOP, 0, thirdAlphaVertexPositionBuffer.numItems)
         mvPopMatrix()
+        mat4.translate(mvMatrix, mvMatrix, [xThirdAlpha, yThirdAlpha, zThirdAlpha])
         mvPushMatrix()
         mat4.rotate(mvMatrix, mvMatrix, glMatrix.toRadian(rSquare), [0.0, 1.0, 0.0])
         //mat4.rotateY(mvMatrix, mvMatrix, glMatrix.toRadian(rSquare))
@@ -198,19 +258,22 @@
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, fifthAlphaVertexPositionBuffer.numItems)
         mvPopMatrix()
       }
+
       var lastTime = 0
       function animate() {
         var timeNow = new Date().getTime()
+        //console.log(timeNow)
         if (lastTime != 0) {
           var elapsed = timeNow - lastTime
           rTri += (90 * elapsed) / 1000.0
-          rSquare += (75 * elapsed) / 1000.0
+          rSquare += (90 * elapsed) / 1000.0
         }
         lastTime = timeNow
       }
       function tick() {
         requestAnimationFrame(tick)
         drawScene()
+        random_boing()
         animate()
       }
       function webGLStart() {
