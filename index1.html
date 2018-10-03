@@ -166,54 +166,57 @@
         fifthAlphaVertexColorBuffer.numItems = 4;
       }
 
-      var main_collision = Math.floor(Math.random() * 3)
-      console.log('col: ' + main_collision)
-      if(main_collision == 0) var xThirdAlpha = 1
-      else if(main_collision == 1) var yThirdAlpha = 1
-      else if(main_collision == 2) var zThirdAlpha = 1
-
-      function random_boing(){
-        collision = Math.floor(Math.random() * 2)
-        //console.log(collision)
-        if(xThirdAlpha == 1){
-          if(collision == 1){
-            xThirdAlpha = Math.random() * 2 - 1
-            yThirdAlpha = Math.floor(Math.random() * 2) - 1
-            zThirdAlpha = Math.random() * 2 - 1
-          }
-          else if(collision == 0){
-            xThirdAlpha = Math.random() * 2 - 1
-            yThirdAlpha = Math.random() * 2 - 1
-            zThirdAlpha = Math.floor(Math.random() * 2) - 1
-          }
-        }
-        else if(yThirdAlpha == 1){
-          if(collision == 1){
-            xThirdAlpha = Math.random() * 2 - 1
-            yThirdAlpha = Math.random() * 2 - 1
-            zThirdAlpha = Math.floor(Math.random() * 2) - 1
-          }
-          else if(collision == 0){
-            xThirdAlpha = Math.floor(Math.random() * 2) - 1
-            yThirdAlpha = Math.random() * 2 - 1
-            zThirdAlpha = Math.random() * 2 - 1
-          }
-        }
-        else if(zThirdAlpha == 1){
-          if(collision == 1){
-            xThirdAlpha = Math.random() * 2 - 1
-            yThirdAlpha = Math.floor(Math.random() * 2) - 1
-            zThirdAlpha = Math.random() * 2 - 1
-          }
-          else if(collision == 0){
-            xThirdAlpha = Math.floor(Math.random() * 2) - 1
-            yThirdAlpha = Math.random() * 2 - 1
-            zThirdAlpha = Math.random() * 2 - 1
-          }
-        }
-        console.log('x: ' + xThirdAlpha + '\ny: ' + yThirdAlpha + '\nz: ' + zThirdAlpha)
-      }
-
+      // var main_collision = Math.floor(Math.random() * 3)
+      // console.log('col: ' + main_collision)
+      // if(main_collision == 0) var xThirdAlpha = 1
+      // else if(main_collision == 1) var yThirdAlpha = 1
+      // else if(main_collision == 2) var zThirdAlpha = 1
+      //
+      // function random_boing(){
+      //   collision = Math.floor(Math.random() * 2)
+      //   //console.log(collision)
+      //   if(xThirdAlpha == 1){
+      //     if(collision == 1){
+      //       xThirdAlpha = Math.random() * 2 - 1 + 0.05
+      //       yThirdAlpha = Math.floor(Math.random() * 2) - 1
+      //       zThirdAlpha = Math.random() * 2 - 1
+      //     }
+      //     else if(collision == 0){
+      //       xThirdAlpha = Math.random() * 2 - 1
+      //       yThirdAlpha = Math.random() * 2 - 1
+      //       zThirdAlpha = Math.floor(Math.random() * 2) - 1
+      //     }
+      //   }
+      //   else if(yThirdAlpha == 1){
+      //     if(collision == 1){
+      //       xThirdAlpha = Math.random() * 2 - 1
+      //       yThirdAlpha = Math.random() * 2 - 1
+      //       zThirdAlpha = Math.floor(Math.random() * 2) - 1
+      //     }
+      //     else if(collision == 0){
+      //       xThirdAlpha = Math.floor(Math.random() * 2) - 1
+      //       yThirdAlpha = Math.random() * 2 - 1
+      //       zThirdAlpha = Math.random() * 2 - 1
+      //     }
+      //   }
+      //   else if(zThirdAlpha == 1){
+      //     if(collision == 1){
+      //       xThirdAlpha = Math.random() * 2 - 1
+      //       yThirdAlpha = Math.floor(Math.random() * 2) - 1
+      //       zThirdAlpha = Math.random() * 2 - 1
+      //     }
+      //     else if(collision == 0){
+      //       xThirdAlpha = Math.floor(Math.random() * 2) - 1
+      //       yThirdAlpha = Math.random() * 2 - 1
+      //       zThirdAlpha = Math.random() * 2 - 1
+      //     }
+      //   }
+      //   console.log('x: ' + xThirdAlpha + '\ny: ' + yThirdAlpha + '\nz: ' + zThirdAlpha)
+      // }
+      var xThirdAlpha = 0.0
+      var yThirdAlpha = 0.0
+      var yPredictThirdAlpha = 0.0
+      var xPredictThirdAlpha = 0.0
       var rTri = 0
       var rSquare = 0
       function drawScene() {
@@ -236,6 +239,27 @@
         setMatrixUniforms()
         gl.drawArrays(gl.LINE_LOOP, 0, thirdAlphaVertexPositionBuffer.numItems)
         mvPopMatrix()
+        if(xThirdAlpha >= 1){
+          xThirdAlpha = 0
+          xPredictThirdAlpha = Math.random() * 2 - 1
+          console.log(xPredictThirdAlpha)
+        }
+
+        //else if(xPredictThirdAlpha >= xThirdAlpha) xThirdAlpha += 0.005
+        //else if(xPredictThirdAlpha <= xThirdAlpha) xThirdAlpha -= 0.005
+        else {
+          xThirdAlpha += 0.005
+        }
+
+        if(yThirdAlpha >= 0.7){
+          console.log(yThirdAlpha)
+          yThirdAlpha = 0
+          yPredictThirdAlpha = Math.random() * 2 - 1
+        }
+        else {
+          yThirdAlpha += 0.005
+        }
+
         mat4.translate(mvMatrix, mvMatrix, [xThirdAlpha, yThirdAlpha, 0])
         //mat4.translate(mvMatrix, mvMatrix, [0, 0])
         mvPushMatrix()
@@ -264,7 +288,7 @@
       function tick() {
         requestAnimationFrame(tick)
         drawScene()
-        random_boing()
+        //random_boing()
         animate()
       }
       function webGLStart() {
