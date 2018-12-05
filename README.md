@@ -1,13 +1,15 @@
-# Tugas-2
+# Tugas-3
 ## Objektif
-Memodifikasi file `index.html` dari Tugas-1 masing-masing agar bila dibuka di *browser* bisa menampilkan animasi **Objek 1 berputar pada sumbu y-nya sendiri** bergerak secara bebas di dalam **Objek 2**. Selebihnya, ketika Objek 1 menyentuh dinding samping Objek 2 (_collision detection_) maka Objek 2 akan memantul dan membalik arah putarannya.
-## Deskripsi Objek-objek
-* **Objek 1** adalah **huruf ketiga** dari nama Anda
-* **Objek 2** adalah **kerangka kubus** (_wireframe cube_)
+Memodifikasi file `index.html` dari Tugas-2 masing-masing agar bila dibuka di *browser* bisa menampilkan canvas WebGL secara *full screen* dengan 4 (empat) buah *frame*. Obyek kubus yang ada di Tugas-2 diberi *texture* pada ketiga sisinya dan dibiarkan terbuka di ketiga sisi lainnya sebagaimana tampak pada ilustrasi di bawah. *Texture* pada kubus mendapat iluminasi *ambient light* bewarna putih sebesar **0.2**. Selebihnya, tambahkan sebuah *point light* bewarna terserah (Anda boleh pilih warna apapun, tapi samakan dengan warna huruf) yang posisinya senantiasa berubah mengikuti posisi pusat dari huruf.
+## Deskripsi Frame-frame
+* **Frame 1** menampilkan **Default View** sebagaimana tampilan di Tugas-2.
+* **Frame 2** menampilkan **Controlled View** dimana kamera bisa dikontrol dengan menggunakan *computer-mouse*.
+* **Frame 3** menampilkan **First Person View** dimana obyek hurufnya tidak perlu ditampilkan, tapi sebagai gantinya kamera akan menempati posisi obyek huruf berikut orientasinya.
+* **Frame 4** menampilkan **Orbital View** dimana kamera akan bergerak mengelilingi obyek kubus, layaknya bumi mengitari matahari.
 ## Ilustrasi
-![Ilustrasi Tugas 2](/IlustrasiTugas2.png)
+![Ilustrasi Tugas 3](/IlustrasiTugas3.png)
 ## Batas Akhir Pengerjaan
-Kamis, 4 Oktober 2018, 23.00 WIB
+Rabu, 12 Desember 2018, 23.00 WIB
 ## Referensi
 * [GL-Matrix](http://glmatrix.net/docs/)
-* [Pelajaran Dasar WebGL](http://learningwebgl.com/blog/?page_id=1217)
+* [Computer Mouse Control on WebGL Application](https://www.tutorialspoint.com/webgl/webgl_interactive_cube.htm)
