@@ -89,24 +89,35 @@ function ObjectFactory(GL, shader) {
         x: 0.0,
         y: 0.0,
         z: 0.0,
-        x_speed: 0.0,
-        y_speed: 0.0,
-        z_speed: 0.0,
+        x_speed: 0.5,
+        y_speed: 0.5,
+        z_speed: 0.5,
         isClockWiseRotation: true,
         vec: [1, 1, 1]
     }
     thirdAlpha.positions = [
-      -0.1, -0.3, 0.0,
-      -0.1, 0.3, 0.0,
-      0.1, 0.3, 0.0,
-      0.1, -0.3, 0.0,
-      -0.1, -0.3, 0.0,
-      -0.1, -0.3, 0.2,
-      -0.1, 0.3, 0.2,
-      0.1, 0.3, 0.2,
-      0.1, -0.3, 0.2,
-      -0.1, -0.3, 0.2,
-      -0.1, 0.3, 0.2,
+      -0.1, -0.4, 0.0,
+      -0.1, 0.4, 0.0,
+      0.1, 0.4, 0.0,
+
+      0.1, -0.4, 0.0,
+      -0.1, -0.4, 0.0,
+      0.1, -0.4, -0.2,
+
+      -0.1, -0.4, -0.2,
+      -0.1, 0.4, -0.2,
+      0.1, 0.4, -0.2,
+
+      0.1, -0.4, -0.2,
+      0.1, 0.4, 0.0,
+      0.1, -0.4, 0.0,
+
+      0.1, 0.4, 0.0,
+      -0.1, 0.4, 0.0,
+      -0.1, 0.4, -0.2,
+
+      -0.1, -0.4, 0.0,
+      -0.1, -0.4, -0.2,
     ]
     thirdAlpha.x = 0
     thirdAlpha.y = 0
@@ -315,9 +326,7 @@ function ObjectFactory(GL, shader) {
         }
 
         do3dTranslation(thirdAlpha)
-        do2dRotation(thirdAlpha.positions, toRadians(
-            thirdAlpha.isClockWiseRotation ? 1 : -1
-        ), thirdAlpha.x, thirdAlpha.z, 0, 2, thirdAlpha.x_speed, thirdAlpha.y_speed)
+        do2dRotation(thirdAlpha.positions, toRadians(thirdAlpha.isClockWiseRotation ? 1 : -1), thirdAlpha.x, thirdAlpha.z, 0, 2, thirdAlpha.x_speed, thirdAlpha.y_speed)
         thirdAlpha.yRotation += thirdAlpha.isClockWiseRotation ? 1 : -1
     }
 }
