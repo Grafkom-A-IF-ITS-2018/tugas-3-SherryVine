@@ -208,8 +208,7 @@
             scene4.drawScene = function (sx, sy, w, h) {
                 this.setGlViewPort(sx, sy, w, h)
                 gl.enable(gl.DEPTH_TEST)
-                mat4.perspective(this.pMatrix, glMatrix.toRadian(45), gl.viewportWidth / gl.viewportHeight, 0.1,
-                    100.0)
+                mat4.perspective(this.pMatrix, glMatrix.toRadian(45), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
                 mat4.identity(this.mvMatrix)
                 let cMatrix = mat4.create()
                 mat4.rotateY(cMatrix, cMatrix, toRadians(45 + this.rDegree++))

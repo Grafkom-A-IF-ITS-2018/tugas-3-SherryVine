@@ -93,23 +93,24 @@ function ObjectFactory(GL, shader) {
         y_speed: 0.0,
         z_speed: 0.0,
         isClockWiseRotation: true,
-        vec: [1, 1, 0]
+        vec: [1, 1, 1]
     }
     thirdAlpha.positions = [
-        1.0, -1.0, 0.0,
-        -0.5, -1.0, 0.0,
-        -1.0, 1.0, 0.0,
-        -0.5, 1.0, 0.0,
-
-        0.5, -1.0, 0.0,
-        1.0, -1.0, 0.0,
-        0.5, 1.0, 0.0,
-        1.0, 1.0, 0.0,
+      -0.1, -0.3, 0.0,
+      -0.1, 0.3, 0.0,
+      0.1, 0.3, 0.0,
+      0.1, -0.3, 0.0,
+      -0.1, -0.3, 0.0,
+      -0.1, -0.3, 0.2,
+      -0.1, 0.3, 0.2,
+      0.1, 0.3, 0.2,
+      0.1, -0.3, 0.2,
+      -0.1, -0.3, 0.2,
+      -0.1, 0.3, 0.2,
     ]
-    console.log(thirdAlpha.positions.length)
-    thirdAlpha.x = -0.375
-    thirdAlpha.y = -0.125
-    thirdAlpha.z = -1.1
+    thirdAlpha.x = 0
+    thirdAlpha.y = 0
+    thirdAlpha.z = 0
     thirdAlpha.yRotation = 0
 
     thirdAlpha.updatePosition = function () {
@@ -197,6 +198,7 @@ function ObjectFactory(GL, shader) {
     this.initBuffers = function () {
         thirdAlphaVertexPositionBuffer = gl.createBuffer()
         gl.bindBuffer(gl.ARRAY_BUFFER, thirdAlphaVertexPositionBuffer)
+        console.log(thirdAlpha.positions)
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(thirdAlpha.positions), gl.STATIC_DRAW)
         thirdAlphaVertexPositionBuffer.itemSize = 3
         thirdAlphaVertexPositionBuffer.numItems = thirdAlpha.positions.length / 3
@@ -204,15 +206,12 @@ function ObjectFactory(GL, shader) {
         gl.bindBuffer(gl.ARRAY_BUFFER, thirdAlphaVertexColorBuffer)
         thirdAlpha.colors = []
         for (var i = 0; i < thirdAlphaVertexPositionBuffer.numItems; i++) {
-            thirdAlpha.colors = thirdAlpha.colors.concat([232, 69, 4, 1.0])
+            thirdAlpha.colors = thirdAlpha.colors.concat([255, 0, 0, .3])
         }
         thirdAlphaVertexColorBuffer.itemSize = 4
         thirdAlphaVertexColorBuffer.numItems = 18
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(thirdAlpha.colors), gl.STATIC_DRAW)
         gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, thirdAlphaVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0)
-
-
-        // shaderManager = this.shaderManager.getAndSwitchShader('texture-shader')
 
         cubeVertexPositionBuffer = gl.createBuffer()
         gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer)
